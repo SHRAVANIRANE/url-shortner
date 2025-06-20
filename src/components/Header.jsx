@@ -12,10 +12,13 @@ import {
   DropdownMenuSeparator,
 } from "./ui/dropdown-menu";
 import { LinkIcon, LogOut } from "lucide-react";
+import { UrlState } from "@/context";
 
 const Header = () => {
   const navigate = useNavigate();
-  const user = false;
+  const { user, fetchUser } = UrlState();
+  console.log("Current User object.", user);
+
   return (
     <nav className="py-4 flex justify-between items-center">
       <Link to={"/"}>
@@ -35,12 +38,12 @@ const Header = () => {
           <DropdownMenu>
             <DropdownMenuTrigger className="w-10 rounded-full overflow-hidden">
               <Avatar>
-                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarImage src={user?.user_metadata?.profilepic} />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuLabel>Shravani Rane</DropdownMenuLabel>
+              <DropdownMenuLabel>{user?.user_metadata?.name}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
                 <LinkIcon className="mr-2 h-4 w-4" />

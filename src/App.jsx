@@ -1,12 +1,15 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
 import "./index.css";
+import UrlProvider from "./context";
+
 import AppLayout from "./layouts/AppLayout";
 import LandingPage from "./pages/LandingPage";
 import Dashboard from "./pages/Dashboard";
 import Auth from "./pages/Auth";
 import Link from "./pages/Link";
 import RedirectLink from "./pages/RedirectLink";
+import RequireAuth from "./components/RequireAuth";
 const router = createBrowserRouter([
   {
     element: <AppLayout />,
@@ -17,7 +20,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/dashboard",
-        element: <Dashboard />,
+        element: (
+          <RequireAuth>
+            <Dashboard />
+          </RequireAuth>
+        ),
       },
       {
         path: "/auth",
@@ -25,7 +32,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/link/:id",
-        element: <Link />,
+        element: (
+          <RequireAuth>
+            <Link />
+          </RequireAuth>
+        ),
       },
       {
         path: "/:id",
@@ -36,7 +47,11 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router}></RouterProvider>;
+  return (
+    <UrlProvider>
+      <RouterProvider router={router} />
+    </UrlProvider>
+  );
 }
 
 export default App;

@@ -66,7 +66,7 @@ const LandingPage = () => {
       />
 
       {/* FAQ section with accordion */}
-      <Accordion type="multiple" collapsible className="w-full md:p-11">
+      <Accordion type="multiple" collapsible="true" className="w-full md:p-11">
         <AccordionItem value="item-1">
           <AccordionTrigger>
             How does the Trimmer URL Shortener work?

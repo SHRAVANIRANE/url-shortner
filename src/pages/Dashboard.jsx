@@ -8,6 +8,8 @@ import Error from "@/components/Error";
 import useFetch from "@/hooks/UseFetch";
 import { getUrls } from "@/db/ApiUrls";
 import { getClicksforUrls } from "@/db/ApiClicks";
+import { UrlState } from "@/context";
+import LinkCard from "@/components/LinkCard";
 
 const Dashboard = () => {
   const { searchQuery, setSearchQuery } = useState("");
@@ -30,19 +32,31 @@ const Dashboard = () => {
     fnUrls();
   }, []);
   useEffect(() => {
-    if (urls.length) fnClicks();
-  }, [urls.length]);
+    if (Array.isArray(urls) && urls.length > 0) {
+      fnClicks();
+    }
+  }, [urls]);
+
+  const filteredUrls = Array.isArray(urls)
+    ? urls.filter(
+        (url) =>
+          typeof url.title === "string" &&
+          url.title.toLowerCase().includes((searchQuery || "").toLowerCase())
+      )
+    : [];
 
   return (
     <div className="flex flex-col gap-8">
-      {true && <BarLoader width={"100%"} color="#36d7b7" />}
+      {(loading || loadingClicks) && (
+        <BarLoader width={"100%"} color="#36d7b7" />
+      )}
       <div className="grid grid-cols-2 gap-4">
         <Card>
           <CardHeader>
             <CardTitle>Links Created</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>0</p>
+            <p>{urls?.length}</p>
           </CardContent>
         </Card>
         <Card>
@@ -50,7 +64,7 @@ const Dashboard = () => {
             <CardTitle>Total Clicks</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>0</p>
+            <p>{clicks?.length}</p>
           </CardContent>
         </Card>
       </div>
@@ -67,7 +81,10 @@ const Dashboard = () => {
         />
         <Filter className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500" />
       </div>
-      <Error message={error.message} />
+      {error && <Error message={error.message} />}
+      {(filteredUrls || []).map((url, i) => {
+        return <LinkCard key={i} url={url} fetchUrl={fnUrls} />;
+      })}
     </div>
   );
 };
